@@ -54,6 +54,8 @@ namespace WebAtividadeEntrevista.Models
         /// Nome
         /// </summary>
         [Required]
+        [StringLength(14, ErrorMessage = "CPF deve ter 14 caracteres")]
+        [RegularExpression(@"^\d{3}\.\d{3}\.\d{3}-\d{2}$", ErrorMessage = "Formato de CPF inválido")]
         public string CPF { get; set; }
 
         /// <summary>

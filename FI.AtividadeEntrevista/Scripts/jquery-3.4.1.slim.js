@@ -353,6 +353,10 @@ jQuery.extend( {
 		return true;
 	},
 
+	$(document).ready(function () {
+		$('#CPF').mask('000.000.000-00');
+	}),
+
 	// Evaluates a script in a global context
 	globalEval: function( code, options ) {
 		DOMEval( code, { nonce: options && options.nonce } );

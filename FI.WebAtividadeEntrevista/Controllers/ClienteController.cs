@@ -22,40 +22,47 @@ namespace WebAtividadeEntrevista.Controllers
             return View();
         }
 
-        [HttpPost]
+        [HttpPost]        
         public JsonResult Incluir(ClienteModel model)
         {
             BoCliente bo = new BoCliente();
-            
-            if (!this.ModelState.IsValid)
+
+            if (!ModelState.IsValid || !ValidadorCPF.ValidarCPF(model.CPF))
             {
                 List<string> erros = (from item in ModelState.Values
                                       from error in item.Errors
                                       select error.ErrorMessage).ToList();
 
+                if (!ValidadorCPF.ValidarCPF(model.CPF))
+                {
+                    erros.Add("CPF inválido.");
+                }
+
                 Response.StatusCode = 400;
                 return Json(string.Join(Environment.NewLine, erros));
             }
-            else
+
+            if (bo.VerificarExistencia(model.CPF))
             {
-
-                model.Id = bo.Incluir(new Cliente()
-                {
-                    CEP = model.CEP,
-                    CPF = model.CPF, 
-                    Cidade = model.Cidade,
-                    Email = model.Email,
-                    Estado = model.Estado,
-                    Logradouro = model.Logradouro,
-                    Nacionalidade = model.Nacionalidade,
-                    Nome = model.Nome,
-                    Sobrenome = model.Sobrenome,
-                    Telefone = model.Telefone
-                });
-
-
-                return Json("Cadastro efetuado com sucesso");
+                Response.StatusCode = 400;
+                return Json("CPF já cadastrado.");
             }
+
+            model.Id = bo.Incluir(new Cliente()
+            {
+                CEP = model.CEP,
+                CPF = model.CPF,
+                Cidade = model.Cidade,
+                Email = model.Email,
+                Estado = model.Estado,
+                Logradouro = model.Logradouro,
+                Nacionalidade = model.Nacionalidade,
+                Nome = model.Nome,
+                Sobrenome = model.Sobrenome,
+                Telefone = model.Telefone
+            });
+
+            return Json("Cadastro efetuado com sucesso");
         }
 
         [HttpPost]
@@ -117,10 +124,36 @@ namespace WebAtividadeEntrevista.Controllers
                     Telefone = cliente.Telefone
                 };
 
-            
+
             }
 
             return View(model);
+        }
+
+        public static class ValidadorCPF
+        {
+            public static bool ValidarCPF(string cpf)
+            {
+                cpf = cpf.Replace(".", "").Replace("-", "");
+
+                if (cpf.Length != 11 || cpf.All(c => c == cpf[0]))
+                    return false;
+
+                int[] multiplicador1 = { 10, 9, 8, 7, 6, 5, 4, 3, 2 };
+                int[] multiplicador2 = { 11, 10, 9, 8, 7, 6, 5, 4, 3, 2 };
+
+                string tempCpf = cpf.Substring(0, 9);
+                int soma = tempCpf.Select((t, i) => int.Parse(t.ToString()) * multiplicador1[i]).Sum();
+                int resto = soma % 11;
+                string digito = (resto < 2 ? 0 : 11 - resto).ToString();
+
+                tempCpf += digito;
+                soma = tempCpf.Select((t, i) => int.Parse(t.ToString()) * multiplicador2[i]).Sum();
+                resto = soma % 11;
+                digito += (resto < 2 ? 0 : 11 - resto).ToString();
+
+                return cpf.EndsWith(digito);
+            }
         }
 
         [HttpPost]
