@@ -1,6 +1,7 @@
 ﻿using FI.AtividadeEntrevista.DML;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.SqlClient;
 using System.Linq;
 
 namespace FI.AtividadeEntrevista.DAL
@@ -34,6 +35,23 @@ namespace FI.AtividadeEntrevista.DAL
             if (ds.Tables[0].Rows.Count > 0)
                 long.TryParse(ds.Tables[0].Rows[0][0].ToString(), out ret);
             return ret;
+        }
+
+        /// <summary>
+        /// Inclui um novo beneficiário para um cliente existente
+        /// </summary>
+        /// <param name="beneficiario">Objeto de beneficiário</param>
+        internal void IncluirBeneficiario(DML.Beneficiario beneficiario)
+        {
+            List<SqlParameter> parametros = new List<SqlParameter>
+            {
+                new SqlParameter("Nome", beneficiario.Nome),
+                new SqlParameter("CPF", beneficiario.CPF),
+                new SqlParameter("IdCliente", beneficiario.IdCliente)
+            };
+
+            // Executa a Stored Procedure para incluir o beneficiário
+            base.Executar("FI_SP_IncBenef", parametros);
         }
 
         /// <summary>

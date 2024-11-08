@@ -3,7 +3,6 @@ using WebAtividadeEntrevista.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 using FI.AtividadeEntrevista.DML;
 
@@ -22,7 +21,7 @@ namespace WebAtividadeEntrevista.Controllers
             return View();
         }
 
-        [HttpPost]        
+        [HttpPost]
         public JsonResult Incluir(ClienteModel model)
         {
             BoCliente bo = new BoCliente();
@@ -61,6 +60,63 @@ namespace WebAtividadeEntrevista.Controllers
                 Sobrenome = model.Sobrenome,
                 Telefone = model.Telefone
             });
+
+            return Json("Cadastro efetuado com sucesso");
+        }
+
+        [HttpPost]
+        public JsonResult Incluir(ClienteModel model, List<BeneficiarioModel> beneficiarios)
+        {
+            BoCliente bo = new BoCliente();
+
+            // Validação do estado do modelo e do CPF
+            if (!ModelState.IsValid || !ValidadorCPF.ValidarCPF(model.CPF))
+            {
+                List<string> erros = (from item in ModelState.Values
+                                      from error in item.Errors
+                                      select error.ErrorMessage).ToList();
+
+                if (!ValidadorCPF.ValidarCPF(model.CPF))
+                {
+                    erros.Add("CPF inválido.");
+                }
+
+                Response.StatusCode = 400;
+                return Json(string.Join(Environment.NewLine, erros));
+            }
+
+            // Inserção do cliente e obtenção do ID gerado
+            model.Id = bo.Incluir(new Cliente()
+            {
+                CEP = model.CEP,
+                CPF = model.CPF,
+                Cidade = model.Cidade,
+                Email = model.Email,
+                Estado = model.Estado,
+                Logradouro = model.Logradouro,
+                Nacionalidade = model.Nacionalidade,
+                Nome = model.Nome,
+                Sobrenome = model.Sobrenome,
+                Telefone = model.Telefone
+            });
+
+            // Inserção de cada beneficiário
+            foreach (var beneficiario in beneficiarios)
+            {
+                if (ValidadorCPF.ValidarCPF(beneficiario.CPF))
+                {
+                    // Converter BeneficiarioModel para FI.AtividadeEntrevista.DML.Beneficiario
+                    var novoBeneficiario = new FI.AtividadeEntrevista.DML.Beneficiario
+                    {
+                        CPF = beneficiario.CPF,
+                        Nome = beneficiario.Nome,
+                        IdCliente = model.Id
+                    };
+
+                    // Chamar IncluirBeneficiario com o tipo correto
+                    bo.IncluirBeneficiario(novoBeneficiario);
+                }
+            }
 
             return Json("Cadastro efetuado com sucesso");
         }

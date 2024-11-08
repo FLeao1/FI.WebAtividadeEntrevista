@@ -1,0 +1,41 @@
+<div class="modal fade" id="modalBeneficiarios" tabindex="-1" role="dialog" aria-labelledby="beneficiariosModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="beneficiariosModalLabel">Beneficiários</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="formBeneficiario">
+                    <div class="form-group">
+                        <label for="cpfBeneficiario">CPF do Beneficiário:</label>
+                        <input type="text" class="form-control" id="cpfBeneficiario" maxlength="14" required placeholder="999.999.999-99">
+                    </div>
+                    <div class="form-group">
+                        <label for="nomeBeneficiario">Nome do Beneficiário:</label>
+                        <input type="text" class="form-control" id="nomeBeneficiario" required maxlength="255">
+                    </div>
+                    <button type="button" class="btn btn-success" id="btnAddBeneficiario">Adicionar</button>
+                </form>
+                <hr>
+                <table class="table table-bordered" id="tableBeneficiarios">
+                    <thead>
+                        <tr>
+                            <th>CPF</th>
+                            <th>Nome</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Beneficiários adicionados serão listados aqui -->
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-sm btn-primary" id="btnBeneficiarios">Beneficiários</button>
+            </div>
+        </div>
+    </div>
+</div>

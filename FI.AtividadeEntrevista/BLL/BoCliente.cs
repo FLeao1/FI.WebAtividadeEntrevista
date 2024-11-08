@@ -5,6 +5,7 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using FI.AtividadeEntrevista.DML;
 
 namespace FI.AtividadeEntrevista.BLL
 {
@@ -17,7 +18,7 @@ namespace FI.AtividadeEntrevista.BLL
         public long Incluir(DML.Cliente cliente)
         {
             DAL.DaoCliente cli = new DAL.DaoCliente();
-            return cli.Incluir(cliente);
+            return cli.Incluir(cliente);            
         }
 
         /// <summary>
@@ -80,6 +81,16 @@ namespace FI.AtividadeEntrevista.BLL
             DAL.DaoCliente cli = new DAL.DaoCliente();
             return cli.VerificarExistencia(CPF);
         }
-                
+
+        /// <summary>
+        /// Inclui um novo beneficiário para o cliente
+        /// </summary>
+        /// <param name="beneficiario">Objeto de beneficiário</param>
+        public void IncluirBeneficiario(DML.Beneficiario beneficiario)
+        {
+            DAL.DaoCliente cli = new DAL.DaoCliente();
+            cli.IncluirBeneficiario(beneficiario);
+        }
+
     }
 }

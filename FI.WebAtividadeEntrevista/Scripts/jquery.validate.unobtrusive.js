@@ -121,6 +121,7 @@
             .removeData("unobtrusiveContainer");
     }
 
+
     function validationInfo(form) {
         var $form = $(form),
             result = $form.data(data_validation),

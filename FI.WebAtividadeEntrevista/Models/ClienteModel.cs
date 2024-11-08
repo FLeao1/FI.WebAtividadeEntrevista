@@ -51,10 +51,10 @@ namespace WebAtividadeEntrevista.Models
         public string Nacionalidade { get; set; }
 
         /// <summary>
-        /// Nome
+        /// CPF
         /// </summary>
         [Required]
-        [StringLength(14, ErrorMessage = "CPF deve ter 14 caracteres")]
+        [StringLength(14, ErrorMessage = "CPF deve ter 11 caracteres")]
         [RegularExpression(@"^\d{3}\.\d{3}\.\d{3}-\d{2}$", ErrorMessage = "Formato de CPF inválido")]
         public string CPF { get; set; }
 
